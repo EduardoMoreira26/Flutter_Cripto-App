@@ -1,3 +1,4 @@
+import 'package:cripto/repositories/coin_repository.dart';
 import 'package:flutter/material.dart';
 
 class CoinsPage extends StatelessWidget {
@@ -5,14 +6,25 @@ class CoinsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tableCoins = CoinReposiroty.table;
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text('Moedas'),
         ),
       ),
-      body: Center(
-        child: Text('Olá MOedas'),
+      body: ListView.separated(
+        itemCount: tableCoins.length, 
+        padding: EdgeInsets.all(16),
+        separatorBuilder: (_,__) => Divider(),
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: Image.asset(tableCoins[index].icon),
+            title: Text(tableCoins[index].name),
+            trailing: Text(tableCoins[index].price.toString()),
+          );
+        },
       ),
     );
   }
