@@ -22,6 +22,11 @@ class CoinsPage extends StatelessWidget {
         separatorBuilder: (_, __) => Divider(),
         itemBuilder: (context, index) {
           return ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
+            ),
             leading: SizedBox(
               child: Image.asset(tableCoins[index].icon),
               width: 40,
@@ -37,6 +42,10 @@ class CoinsPage extends StatelessWidget {
               real.format(tableCoins[index].price),
             ),
             selected: false,
+            selectedTileColor: Colors.indigo[50],
+            onLongPress: (){
+              print('Pressionou');
+            },
           );
         },
       ),
