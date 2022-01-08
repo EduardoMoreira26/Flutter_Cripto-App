@@ -1,14 +1,21 @@
+import 'package:cripto/models/coin.dart';
 import 'package:cripto/repositories/coin_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class CoinsPage extends StatelessWidget {
+class CoinsPage extends StatefulWidget {
   const CoinsPage({Key key}) : super(key: key);
 
+  @override
+  _CoinsPageState createState() => _CoinsPageState();
+}
+
+class _CoinsPageState extends State<CoinsPage> {
   @override
   Widget build(BuildContext context) {
     final tableCoins = CoinReposiroty.table;
     NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+    List<Coin> selectedCoins = [];
 
     return Scaffold(
       appBar: AppBar(
@@ -29,7 +36,7 @@ class CoinsPage extends StatelessWidget {
             ),
             leading: SizedBox(
               child: Image.asset(tableCoins[index].icon),
-              width: 40,
+              width: 30,
             ),
             title: Text(
               tableCoins[index].name,
@@ -41,10 +48,14 @@ class CoinsPage extends StatelessWidget {
             trailing: Text(
               real.format(tableCoins[index].price),
             ),
-            selected: false,
+            selected: selectedCoins.contains(tableCoins[index]),
             selectedTileColor: Colors.indigo[50],
-            onLongPress: (){
-              print('Pressionou');
+            onLongPress: () {
+              setState(() {
+                (selectedCoins.contains(tableCoins[index]))
+                    ? selectedCoins.remove(tableCoins[index])
+                    : selectedCoins.add(tableCoins[index]);
+              });
             },
           );
         },
