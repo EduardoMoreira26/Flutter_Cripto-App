@@ -18,37 +18,37 @@ class _MoedasPageState extends State<MoedasPage> {
   NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
   List<Coin> selectedCoins = [];
   FavoritesRepository favoritesRepository;
-  
 
-  // appBarDinamica() {
-  //   if (selectedCoins.isEmpty) {
-  //     return AppBar(
-  //       title: Text('Cripto Moedas'),
-  //     );
-  //   } else {
-  //     return AppBar(
-  //       leading: IconButton(
-  //         icon: Icon(Icons.arrow_back),
-  //         onPressed: () {
-  //           setState(() {
-  //             selectedCoins = [];
-  //           });
-  //         },
-  //       ),
-  //       // title: Text('${selectedCoins.length} selectedCoins'),
-  //       backgroundColor: Colors.blueGrey[50],
-  //       elevation: 1,
-  //       iconTheme: IconThemeData(color: Colors.black87),
-  //       textTheme: TextTheme(
-  //         headline6: TextStyle(
-  //           color: Colors.black87,
-  //           fontSize: 20,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //     );
-  //   }
-  // }
+  appBarDinamica() {
+    if (selectedCoins.isEmpty) {
+      return AppBar(
+        title: Text('Cripto Moedas'),
+      );
+    } else {
+      return AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            setState(() {
+              selectedCoins = [];
+            });
+          },
+        ),
+        title: Text(
+            '${selectedCoins.length} ${selectedCoins.length > 1 ? 'selecionadas' : 'selecionada'} '),
+        backgroundColor: Colors.blueGrey[50],
+        elevation: 1,
+        iconTheme: IconThemeData(color: Colors.black87),
+        textTheme: TextTheme(
+          headline6: TextStyle(
+            color: Colors.black87,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+  }
 
   datailsCoin(Coin coin) {
     Navigator.push(
@@ -64,9 +64,7 @@ class _MoedasPageState extends State<MoedasPage> {
     favoritesRepository = Provider.of<FavoritesRepository>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text('Cripto Moedas')),
-      ),
+      appBar: appBarDinamica(),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int coin) {
           return ListTile(
@@ -108,20 +106,22 @@ class _MoedasPageState extends State<MoedasPage> {
         separatorBuilder: (_, ___) => Divider(),
         itemCount: table.length,
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      // floatingActionButton: selectedCoins.isNotEmpty
-      //     ? FloatingActionButton.extended(
-      //         onPressed: () {},
-      //         icon: Icon(Icons.star),
-      //         label: Text(
-      //           'FAVORITAR',
-      //           style: TextStyle(
-      //             letterSpacing: 0,
-      //             fontWeight: FontWeight.bold,
-      //           ),
-      //         ),
-      //       )
-      //     : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: selectedCoins.isNotEmpty
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                favoritesRepository.saveAll(selectedCoins);
+              },
+              icon: Icon(Icons.star),
+              label: Text(
+                'FAVORITAR',
+                style: TextStyle(
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : null,
     );
   }
 }
