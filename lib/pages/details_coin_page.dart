@@ -1,5 +1,6 @@
 import 'package:cripto/models/coin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
@@ -19,6 +20,7 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
   NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
   final _form = GlobalKey<FormState>();
   final _value = TextEditingController();
+  double qtd = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,24 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
                 ],
               ),
             ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Container(
+                child: Text(
+                  '$qtd ${widget.coin.initials}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.teal,
+                  ),
+                ),
+                margin: EdgeInsets.only(bottom: 24),
+                padding: EdgeInsets.all(12),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.teal.withOpacity(0.05),
+                ),
+              ),
+            ),
             Form(
               key: _form,
               child: TextFormField(
@@ -68,6 +88,22 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
                   ),
                 ),
                 keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Informe o valor da compra';
+                  } else if (double.parse(value) < 50) {
+                    return 'Compra mínima é R\$ 50,00';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    qtd = (value.isEmpty)
+                        ? 0
+                        : double.parse(value) / widget.coin.price;
+                  });
+                },
               ),
             ),
           ],
