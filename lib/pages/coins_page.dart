@@ -59,9 +59,16 @@ class _MoedasPageState extends State<MoedasPage> {
     );
   }
 
+  cleanSelectedCoins() {
+    setState(() {
+      selectedCoins = [];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     favoritesRepository = Provider.of<FavoritesRepository>(context);
+
 
     return Scaffold(
       appBar: appBarDinamica(),
@@ -79,12 +86,19 @@ class _MoedasPageState extends State<MoedasPage> {
                     child: Image.asset(table[coin].icon),
                     width: 40,
                   ),
-            title: Text(
-              table[coin].name,
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w500,
-              ),
+            title: Row(
+              children: [
+                Text(
+                  table[coin].name,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if(favoritesRepository.list.contains(table[coin]))
+                  Icon(Icons.circle, color: Colors.amber, size: 8),
+                
+              ],
             ),
             trailing: Text(
               real.format(table[coin].price),
@@ -111,6 +125,7 @@ class _MoedasPageState extends State<MoedasPage> {
           ? FloatingActionButton.extended(
               onPressed: () {
                 favoritesRepository.saveAll(selectedCoins);
+                cleanSelectedCoins();
               },
               icon: Icon(Icons.star),
               label: Text(

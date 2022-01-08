@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class FavoritesRepository extends ChangeNotifier {
   List<Coin> _list = [];
 
-  UnmodifiableListView<Coin> get list => UnmodifiableListView(_list);
+ UnmodifiableListView<Coin> get list => UnmodifiableListView(_list);
 
   saveAll(List<Coin> coins) {
     coins.forEach((coin) {
