@@ -22,6 +22,16 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
   final _value = TextEditingController();
   double qtd = 0;
 
+  buyCoin() {
+    if (_form.currentState.validate()) {
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Compra realizada com sucesso!'),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,24 +65,28 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
                 ],
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                child: Text(
-                  '$qtd ${widget.coin.initials}',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.teal,
+            (qtd > 0)
+                ? SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Container(
+                      child: Text(
+                        '$qtd ${widget.coin.initials}',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.teal,
+                        ),
+                      ),
+                      margin: EdgeInsets.only(bottom: 24),
+                      padding: EdgeInsets.all(12),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.teal.withOpacity(0.05),
+                      ),
+                    ),
+                  )
+                : Container(
+                    margin: EdgeInsets.only(bottom: 24),
                   ),
-                ),
-                margin: EdgeInsets.only(bottom: 24),
-                padding: EdgeInsets.all(12),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.teal.withOpacity(0.05),
-                ),
-              ),
-            ),
             Form(
               key: _form,
               child: TextFormField(
@@ -98,12 +112,36 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
                   return null;
                 },
                 onChanged: (value) {
-                  setState(() {
-                    qtd = (value.isEmpty)
-                        ? 0
-                        : double.parse(value) / widget.coin.price;
-                  });
+                  setState(
+                    () {
+                      qtd = (value.isEmpty)
+                          ? 0
+                          : double.parse(value) / widget.coin.price;
+                    },
+                  );
                 },
+              ),
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              margin: EdgeInsets.only(top: 24),
+              child: ElevatedButton(
+                onPressed: buyCoin,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check),
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        'Comprar',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ],
