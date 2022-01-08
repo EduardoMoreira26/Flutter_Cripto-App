@@ -12,7 +12,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Moedas Favoritas'),
+        title: Center(child: Text('Moedas Favoritas')),
       ),
     );
   }

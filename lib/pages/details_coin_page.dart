@@ -19,7 +19,19 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.coin.name),
+        title: Center(child: Text(widget.coin.name)),
+      ),
+      body: Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                child: Image.asset(widget.coin.icon),
+                width: 50,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

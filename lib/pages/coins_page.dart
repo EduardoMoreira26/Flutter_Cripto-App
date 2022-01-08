@@ -65,7 +65,7 @@ class _MoedasPageState extends State<MoedasPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cripto Moedas'),
+        title: Center(child: Text('Cripto Moedas')),
       ),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int coin) {
