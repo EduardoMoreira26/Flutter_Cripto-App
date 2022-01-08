@@ -1,7 +1,10 @@
 import 'package:cripto/models/coin.dart';
+import 'package:cripto/pages/details_coin_page.dart';
 import 'package:cripto/repositories/coin_repository.dart';
+import 'package:cripto/repositories/favorites_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MoedasPage extends StatefulWidget {
   MoedasPage({Key key}) : super(key: key);
@@ -14,6 +17,8 @@ class _MoedasPageState extends State<MoedasPage> {
   final table = CoinReposiroty.table;
   NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
   List<Coin> selectedCoins = [];
+  FavoritesRepository favoritesRepository;
+  
 
   // appBarDinamica() {
   //   if (selectedCoins.isEmpty) {
@@ -45,17 +50,19 @@ class _MoedasPageState extends State<MoedasPage> {
   //   }
   // }
 
-  // mostrarDetalhes(Moeda moeda) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (_) => MoedasDetalhesPage(moeda: moeda),
-  //     ),
-  //   );
-  // }
+  datailsCoin(Coin coin) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => DetailsCoinPage(coin: coin),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    favoritesRepository = Provider.of<FavoritesRepository>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Cripto Moedas'),
@@ -94,7 +101,7 @@ class _MoedasPageState extends State<MoedasPage> {
                     : selectedCoins.add(table[coin]);
               });
             },
-            // onTap: () => mostrarDetalhes(table[coin]),
+            onTap: () => datailsCoin(table[coin]),
           );
         },
         padding: EdgeInsets.all(16),
