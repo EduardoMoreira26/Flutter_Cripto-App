@@ -57,7 +57,9 @@ class _MoedasPageState extends State<MoedasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: appBarDinamica(),
+      appBar: AppBar(
+        title: Text('Cripto Moedas'),
+      ),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int coin) {
           return ListTile(
