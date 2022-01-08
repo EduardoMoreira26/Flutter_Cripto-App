@@ -55,6 +55,7 @@ class _CoinsPageState extends State<CoinsPage> {
                 (selectedCoins.contains(tableCoins[index]))
                     ? selectedCoins.remove(tableCoins[index])
                     : selectedCoins.add(tableCoins[index]);
+              print(tableCoins[index].name);
               });
             },
           );
