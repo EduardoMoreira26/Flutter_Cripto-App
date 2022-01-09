@@ -96,7 +96,7 @@ class _MoedasPageState extends State<MoedasPage> {
                   ),
                 ),
                 if(favoritesRepository.list.contains(table[coin]))
-                  Icon(Icons.circle, color: Colors.amber, size: 8),
+                  Icon(Icons.star, color: Colors.amber, size: 12),
                 
               ],
             ),
