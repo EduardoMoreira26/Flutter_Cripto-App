@@ -27,7 +27,7 @@ class _CoinsPageState extends State<CoinsPage> {
     real = NumberFormat.currency(locale: loc['locale'], name: loc['name']);
   }
 
-   changeLanguageButton() {
+  changeLanguageButton() {
     final locale = loc['locale'] == 'pt_BR' ? 'en_US' : 'pt_BR';
     final name = loc['locale'] == 'pt_BR' ? '\$' : 'R\$';
 
@@ -126,7 +126,8 @@ class _CoinsPageState extends State<CoinsPage> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                if (favoritesRepository.list.contains(table[coin]))
+                if (favoritesRepository.list.any((favoriteCoin) =>
+                    favoriteCoin.initials == table[coin].initials))
                   Icon(Icons.star, color: Colors.amber, size: 12),
               ],
             ),

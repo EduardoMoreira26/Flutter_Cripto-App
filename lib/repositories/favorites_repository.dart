@@ -19,15 +19,25 @@ class FavoritesRepository extends ChangeNotifier {
 
   _openBox() async {
     Hive.registerAdapter(CoinHiveAdapter());
+    box = await Hive.openLazyBox<Coin>('favaorites_coins');
   }
 
-  _readFavorites() async {}
+  _readFavorites() async {
+    box.keys.forEach((coin) async {
+      Coin m = await box.get(coin);
+      _list.add(m);
+      notifyListeners();
+    });
+  }
 
   UnmodifiableListView<Coin> get list => UnmodifiableListView(_list);
 
   saveAll(List<Coin> coins) {
     coins.forEach((coin) {
-      if (!_list.contains(coin)) _list.add(coin);
+      if (!_list.any((element) => element.initials == coin.initials)) {
+        _list.add(coin);
+        box.put(coin.initials, coin);
+      }
     });
 
     notifyListeners();
@@ -35,6 +45,7 @@ class FavoritesRepository extends ChangeNotifier {
 
   remove(Coin coin) {
     _list.remove(coin);
+    box.delete(coin.initials);
     notifyListeners();
   }
 }
