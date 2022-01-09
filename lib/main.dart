@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:cripto/configs/app_settings.dart';
 import 'package:cripto/repositories/favorites_repository.dart';
 import 'package:flutter/cupertino.dart';

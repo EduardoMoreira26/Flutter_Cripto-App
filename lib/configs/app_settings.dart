@@ -9,7 +9,7 @@ class AppSettings extends ChangeNotifier {
     'name': 'R\$',
   };
 
-  AppSettigns() {
+  AppSettings() {
     _startSettings();
   }
 
@@ -23,8 +23,8 @@ class AppSettings extends ChangeNotifier {
   }
 
   Future<void> _readLocale() async {
-    final local = _prefs.getString('local') ?? 'pt_BR';
-    final name = _prefs.getString('name') ?? 'R\$';
+    final local = _prefs?.getString('local') ?? 'pt_BR';
+    final name = _prefs?.getString('name') ?? 'R\$';
 
     locale = {
       'locale': local,
@@ -34,8 +34,8 @@ class AppSettings extends ChangeNotifier {
   }
 
   setLocale(String local, String name) async {
-    await _prefs.setString('locale', local);
-    await _prefs.setString('name', name);
+    await _prefs?.setString('locale', local);
+    await _prefs?.setString('name', name);
     await _readLocale();
   }
 }

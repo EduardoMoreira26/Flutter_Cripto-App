@@ -18,33 +18,31 @@ class _CoinsPageState extends State<CoinsPage> {
   final table = CoinReposiroty.table;
   // NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
   NumberFormat real;
-  Map<String, String> localization;
+  Map<String, String> loc;
   List<Coin> selectedCoins = [];
   FavoritesRepository favoritesRepository;
 
   readNumberFormat() {
-    localization = context.watch<AppSettings>().locale;
-    real = NumberFormat.currency(
-        locale: localization['locale'], name: localization['name']);
+    loc = context.watch<AppSettings>().locale;
+    real = NumberFormat.currency(locale: loc['locale'], name: loc['name']);
   }
 
-  changeLanguageButton() {
-    final locale = localization['locale'] == 'pt_BR' ? 'en_US' : 'pt_BR';
-    final name = localization['locale'] == 'pt_BR' ? '\$' : 'R\$';
+   changeLanguageButton() {
+    final locale = loc['locale'] == 'pt_BR' ? 'en_US' : 'pt_BR';
+    final name = loc['locale'] == 'pt_BR' ? '\$' : 'R\$';
 
     return PopupMenuButton(
       icon: Icon(Icons.language),
       itemBuilder: (context) => [
         PopupMenuItem(
-          child: ListTile(
-            leading: Icon(Icons.swap_vert),
-            title: Text('Usar $locale'),
-            onTap: () {
-              context.read<AppSettings>().setLocale(locale, name);
-              Navigator.pop(context);
-            },
-          ),
-        ),
+            child: ListTile(
+          leading: Icon(Icons.swap_vert),
+          title: Text('Usar $locale'),
+          onTap: () {
+            context.read<AppSettings>().setLocale(locale, name);
+            Navigator.pop(context);
+          },
+        )),
       ],
     );
   }
