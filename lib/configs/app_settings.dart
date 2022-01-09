@@ -18,12 +18,24 @@ class AppSettings extends ChangeNotifier {
     await _readLocale();
   }
 
-  Future<void>  _startPreferences() async {
+  Future<void> _startPreferences() async {
     _prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> _readLocale() async {
+    final local = _prefs.getString('local') ?? 'pt_BR';
+    final name = _prefs.getString('name') ?? 'R\$';
 
+    locale = {
+      'locale': local,
+      'name': name,
+    };
+    notifyListeners();
   }
 
+  setLocale(String local, String name) async {
+    await _prefs.setString('locale', local);
+    await _prefs.setString('name', name);
+    await _readLocale();
+  }
 }
