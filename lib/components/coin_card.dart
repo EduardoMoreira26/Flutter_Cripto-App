@@ -22,7 +22,7 @@ class _CoinCardState extends State<CoinCard> {
     'down': Colors.indigo,
   };
 
-  abrirDetalhes() {
+  openDetails() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -37,7 +37,7 @@ class _CoinCardState extends State<CoinCard> {
       margin: EdgeInsets.only(top: 12),
       elevation: 2,
       child: InkWell(
-        onTap: () => abrirDetalhes(),
+        onTap: () => openDetails(),
         child: Padding(
           padding: EdgeInsets.only(top: 20, bottom: 20, left: 20),
           child: Row(
