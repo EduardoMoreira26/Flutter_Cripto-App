@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       body: PageView(
         controller: pageController,
         children: [
-          MoedasPage(),
+          CoinsPage(),
           FavoritesPage(),
         ],
         onPageChanged: setAtualPage,

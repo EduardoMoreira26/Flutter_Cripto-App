@@ -1,3 +1,4 @@
+import 'package:cripto/configs/app_settings.dart';
 import 'package:cripto/models/coin.dart';
 import 'package:cripto/pages/details_coin_page.dart';
 import 'package:cripto/repositories/coin_repository.dart';
@@ -6,23 +7,55 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class MoedasPage extends StatefulWidget {
-  MoedasPage({Key key}) : super(key: key);
+class CoinsPage extends StatefulWidget {
+  CoinsPage({Key key}) : super(key: key);
 
   @override
-  _MoedasPageState createState() => _MoedasPageState();
+  _CoinsPageState createState() => _CoinsPageState();
 }
 
-class _MoedasPageState extends State<MoedasPage> {
+class _CoinsPageState extends State<CoinsPage> {
   final table = CoinReposiroty.table;
-  NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+  // NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+  NumberFormat real;
+  Map<String, String> localization;
   List<Coin> selectedCoins = [];
   FavoritesRepository favoritesRepository;
+
+  readNumberFormat() {
+    localization = context.watch<AppSettings>().locale;
+    real = NumberFormat.currency(
+        locale: localization['locale'], name: localization['name']);
+  }
+
+  changeLanguageButton() {
+    final locale = localization['locale'] == 'pt_BR' ? 'en_US' : 'pt_BR';
+    final name = localization['locale'] == 'pt_BR' ? '\$' : 'R\$';
+
+    return PopupMenuButton(
+      icon: Icon(Icons.language),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          child: ListTile(
+            leading: Icon(Icons.swap_vert),
+            title: Text('Usar $locale'),
+            onTap: () {
+              context.read<AppSettings>().setLocale(locale, name);
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
   appBarDinamica() {
     if (selectedCoins.isEmpty) {
       return AppBar(
         title: Text('Cripto Moedas'),
+        actions: [
+          changeLanguageButton(),
+        ],
       );
     } else {
       return AppBar(
@@ -68,7 +101,7 @@ class _MoedasPageState extends State<MoedasPage> {
   @override
   Widget build(BuildContext context) {
     favoritesRepository = Provider.of<FavoritesRepository>(context);
-
+    readNumberFormat();
 
     return Scaffold(
       appBar: appBarDinamica(),
@@ -95,9 +128,8 @@ class _MoedasPageState extends State<MoedasPage> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                if(favoritesRepository.list.contains(table[coin]))
+                if (favoritesRepository.list.contains(table[coin]))
                   Icon(Icons.star, color: Colors.amber, size: 12),
-                
               ],
             ),
             trailing: Text(

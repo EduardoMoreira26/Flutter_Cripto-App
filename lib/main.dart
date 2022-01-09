@@ -10,12 +10,8 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => AppSettings(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => FavoritesRepository(),
-        ),
+        ChangeNotifierProvider(create: (context) => AppSettings()),
+        ChangeNotifierProvider(create: (context) => FavoritesRepository()),
       ],
       child: MyApp(),
     ),
