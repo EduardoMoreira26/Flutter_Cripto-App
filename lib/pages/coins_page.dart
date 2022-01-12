@@ -50,7 +50,7 @@ class _CoinsPageState extends State<CoinsPage> {
   appBarDinamica() {
     if (selectedCoins.isEmpty) {
       return AppBar(
-        title: Text('Cripto Moedas'),
+        title: Center(child: Text('Cripto Moedas')),
         actions: [
           changeLanguageButton(),
         ],
