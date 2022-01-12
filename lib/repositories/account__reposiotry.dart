@@ -3,7 +3,7 @@ import 'package:cripto/models/position.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ContaRepository extends ChangeNotifier {
+class AccountReposiotry extends ChangeNotifier {
   Database db;
   List<Position> _wallet = [];
   double _saldo = 0;
@@ -11,7 +11,7 @@ class ContaRepository extends ChangeNotifier {
   get saldo => _saldo;
   List<Position> get wallet => _wallet;
 
-  ContaRepository()  {
+  AccountReposiotry()  {
      _initRepository();
   }
 
