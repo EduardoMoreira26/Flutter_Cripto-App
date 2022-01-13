@@ -1,5 +1,7 @@
 import 'package:cripto/configs/app_settings.dart';
+import 'package:cripto/models/position.dart';
 import 'package:cripto/repositories/account__reposiotry.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,10 @@ class _WalletPageState extends State<WalletPage> {
   double saldo = 0;
   NumberFormat real;
   AccountReposiotry account;
+
+   double graficoValor = 0;
+  String graficoLabel = '';
+  List<Position> wallet = [];
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +73,99 @@ class _WalletPageState extends State<WalletPage> {
     });
   }
 
-  loadGraphic() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 200,
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+  setGraphicData(index){
+    if(index < 0) return;
+
+     if (index == wallet.length) {
+      graficoLabel = 'Saldo';
+      graficoValor = account.saldo;
+    } else {
+      graficoLabel = wallet[index].coin.name;
+      graficoValor = wallet[index].coin.price * wallet[index].quantidade;
+    }
   }
+
+  loadWallet(){
+    setGraphicData(index);
+    wallet = account.wallet;
+
+    final widhtList = wallet.length + 1;
+
+    return List.generate(widhtList, (i) {
+      final isTouched = i == index;
+      final isSaldo = i == widhtList - 1;
+      final fontSize = isTouched ? 18.0 : 14.0;
+      final radius = isTouched ? 60.0 : 50.0;
+      final color = isTouched ? Colors.tealAccent : Colors.tealAccent[400];
+
+       double porcentagem = 0;
+      if (!isSaldo) {
+        porcentagem =
+            wallet[i].coin.price * wallet[i].quantidade / totalWallet;
+      } else {
+        porcentagem = (account.saldo > 0) ? account.saldo / totalWallet : 0;
+      }
+      porcentagem *= 100;
+
+      return PieChartSectionData(
+        color: color,
+        value: porcentagem,
+        title: '${porcentagem.toStringAsFixed(0)}%',
+        radius: radius,
+        titleStyle: TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      );
+
+    });
+
+  }
+
+  loadGraphic() {
+    return (account.saldo <= 0)
+        ? Container(
+            width: MediaQuery.of(context).size.width,
+            height: 200,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+        : Stack(
+            alignment: Alignment.center,
+            children: [
+              AspectRatio(
+                aspectRatio: 1,
+                child: PieChart(
+                  PieChartData(
+                    sectionsSpace: 5,
+                    centerSpaceRadius: 110,
+                    sections: loadWallet(),
+                    pieTouchData: PieTouchData(
+                      touchCallback: (touch) => setState(() {
+                        index = touch.touchedSection.touchedSectionIndex;
+                        setGraphicData(index);
+                      }),
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  Text(
+                    graficoLabel,
+                    style: TextStyle(fontSize: 20, color: Colors.teal),
+                  ),
+                  Text(
+                    real.format(graficoValor),
+                    style: TextStyle(fontSize: 28),
+                  ),
+                ],
+              )
+            ],
+          );
+  }
+
+
 }
