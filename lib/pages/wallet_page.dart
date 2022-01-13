@@ -25,7 +25,7 @@ class _WalletPageState extends State<WalletPage> {
     real = NumberFormat.currency(locale: loc['locale'], name: loc['name']);
     saldo = account.saldo;
 
-    // setTotalCarteira();
+    setTotalWallet();
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -56,16 +56,24 @@ class _WalletPageState extends State<WalletPage> {
       ),
     );
   }
-  
+
+  setTotalWallet() {
+    final listWallet = account.wallet;
+    setState(() {
+      totalWallet = account.saldo;
+      for (var position in listWallet) {
+        totalWallet = position.coin.price * position.quantidade;
+      }
+    });
+  }
+
   loadGraphic() {
-  return Container(
-    width: MediaQuery.of(context).size.width,
-    height: 200,
-    child: Center(
-      child: CircularProgressIndicator(),
-    ),
-  );
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 200,
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
 }
-
-}
-
