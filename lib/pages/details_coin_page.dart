@@ -27,7 +27,7 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
 
   buyCoin() async {
     if (_form.currentState.validate()) {
-      await accountReposiotry.buy(widget.coin, double.parse(_value.text));
+      await accountReposiotry.comprar(widget.coin, double.parse(_value.text));
 
 
       Navigator.pop(context);
@@ -116,7 +116,7 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
                     return 'Informe o valor da compra';
                   } else if (double.parse(value) < 50) {
                     return 'Compra mínima é R\$ 50,00';
-                  } else if (double.parse(value) <= accountReposiotry.saldo){
+                  } else if (double.parse(value) > accountReposiotry.saldo){
                     return 'Você não tem saldo suficiente.';
                   }
                   return null;

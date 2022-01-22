@@ -6,41 +6,40 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class WalletPage extends StatefulWidget {
-  WalletPage({Key key}) : super(key: key);
+class CarteiraPage extends StatefulWidget {
+  CarteiraPage({Key key}) : super(key: key);
 
   @override
-  _WalletPageState createState() => _WalletPageState();
+  _CarteiraPageState createState() => _CarteiraPageState();
 }
 
-class _WalletPageState extends State<WalletPage> {
+class _CarteiraPageState extends State<CarteiraPage> {
   int index = 0;
-  double totalWallet = 0;
-  double saldo = 0;
+  double totalCarteira = 0;
+  double saldo;
   NumberFormat real;
-  AccountReposiotry account;
+  AccountReposiotry conta;
 
   double graficoValor = 0;
   String graficoLabel = '';
-  List<Position> wallet = [];
+  List<Position> carteira = [];
 
   @override
   Widget build(BuildContext context) {
-    account = context.watch<AccountReposiotry>();
+    conta = context.watch<AccountReposiotry>();
     final loc = context.read<AppSettings>().locale;
     real = NumberFormat.currency(locale: loc['locale'], name: loc['name']);
-    saldo = account.saldo;
+    saldo = conta.saldo;
 
-    setTotalWallet();
+    setTotalCarteira();
 
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.only(top: 48),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 48, bottom: 24),
+              padding: EdgeInsets.only(top: 48, bottom: 8),
               child: Text(
                 'Valor da Carteira',
                 style: TextStyle(
@@ -49,60 +48,115 @@ class _WalletPageState extends State<WalletPage> {
               ),
             ),
             Text(
-              real.format(totalWallet),
+              real.format(totalCarteira),
               style: TextStyle(
                 fontSize: 35,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -1.5,
               ),
             ),
-            loadGraphic(),
+            loadGrafico(),
+            loadHistorico(),
           ],
         ),
       ),
     );
   }
 
-  setTotalWallet() {
-    final listWallet = account.wallet;
+  loadHistorico() {
+    final historico = conta.historico;
+    final date = DateFormat('dd/MM/yyyy - hh:mm');
+
+    List<Widget> widgets = [];
+
+    for (var operacao in historico) {
+      widgets.add(ListTile(
+        title: Text(operacao.moeda.name),
+        subtitle: Text(date.format(operacao.dataOperacao)),
+        trailing: Text(
+            (operacao.moeda.price * operacao.quantidade).toStringAsFixed(2)),
+      ));
+      widgets.add(Divider());
+    }
+
+    return Column(
+      children: widgets,
+    );
+  }
+
+  setTotalCarteira() {
+    final carteiraList = conta.carteira;
+
     setState(() {
-      totalWallet = account.saldo;
-      for (var position in listWallet) {
-        totalWallet = position.coin.price * position.quantidade;
+      totalCarteira = conta.saldo;
+      for (var posicao in carteiraList) {
+        totalCarteira += posicao.coin.price * posicao.quantidade;
       }
     });
   }
 
-  setGraphicData(index) {
-    if (index < 0) return;
-
-    if (index == wallet.length) {
-      graficoLabel = 'Saldo';
-      graficoValor = account.saldo;
-    } else {
-      graficoLabel = wallet[index].coin.name;
-      graficoValor = wallet[index].coin.price * wallet[index].quantidade;
-    }
+  loadGrafico() {
+    return (conta.saldo <= 0)
+        ? Container(
+            width: MediaQuery.of(context).size.width,
+            height: 200,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+        : Stack(
+            alignment: Alignment.center,
+            children: [
+              AspectRatio(
+                aspectRatio: 1,
+                child: PieChart(
+                  PieChartData(
+                    sectionsSpace: 5,
+                    centerSpaceRadius: 110,
+                    sections: loadCarteira(),
+                    pieTouchData: PieTouchData(
+                      touchCallback: (touch) => setState(() {
+                        index = touch.touchedSection.touchedSectionIndex;
+                        setGraficoDados(index);
+                      }),
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  Text(
+                    graficoLabel,
+                    style: TextStyle(fontSize: 20, color: Colors.teal),
+                  ),
+                  Text(
+                    real.format(graficoValor),
+                    style: TextStyle(fontSize: 28),
+                  ),
+                ],
+              )
+            ],
+          );
   }
 
-  loadWallet() {
-    setGraphicData(index);
-    wallet = account.wallet;
+  List<PieChartSectionData> loadCarteira() {
+    setGraficoDados(index);
+    carteira = conta.carteira;
+    final tamanhoLista = carteira.length + 1;
 
-    final widhtList = wallet.length + 1;
-
-    return List.generate(widhtList, (i) {
+    return List.generate(tamanhoLista, (i) {
       final isTouched = i == index;
-      final isSaldo = i == widhtList - 1;
+      final isSaldo = i == tamanhoLista - 1;
       final fontSize = isTouched ? 18.0 : 14.0;
       final radius = isTouched ? 60.0 : 50.0;
       final color = isTouched ? Colors.tealAccent : Colors.tealAccent[400];
 
       double porcentagem = 0;
       if (!isSaldo) {
-        porcentagem = wallet[i].coin.price * wallet[i].quantidade / totalWallet;
+        porcentagem =
+            carteira[i].coin.price * carteira[i].quantidade / totalCarteira;
       } else {
-        porcentagem = (account.saldo > 0) ? account.saldo / totalWallet : 0;
+        porcentagem = (conta.saldo > 0) ? conta.saldo / totalCarteira : 0;
       }
       porcentagem *= 100;
 
@@ -120,54 +174,15 @@ class _WalletPageState extends State<WalletPage> {
     });
   }
 
-  loadGraphic() {
-    return (account.saldo <= 0)
-        ? Container(
-            width: MediaQuery.of(context).size.width,
-            height: 200,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          )
-        : Stack(
-            alignment: Alignment.center,
-            children: [
-              AspectRatio(
-                aspectRatio: 1,
-                child: PieChart(
-                  PieChartData(
-                    sectionsSpace: 50,
-                    centerSpaceRadius: 120,
-                    sections: loadWallet(),
-                    pieTouchData: PieTouchData(
-                      touchCallback: (touch) => setState(() {
-                        index = touch.touchedSection.touchedSectionIndex;
-                        setGraphicData(index);
-                      }),
-                    ),
-                  ),
-                ),
-              ),
-              Column(
-                children: [
-                  Text(
-                    graficoLabel,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.teal,
-                    ),
-                  ),
-                  Text(
-                    real.format(
-                      graficoValor,
-                    ),
-                    style: TextStyle(
-                      fontSize: 28,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          );
+  setGraficoDados(index) {
+    if (index < 0) return;
+
+    if (index == carteira.length) {
+      graficoLabel = 'Saldo';
+      graficoValor = conta.saldo;
+    } else {
+      graficoLabel = carteira[index].coin.name;
+      graficoValor = carteira[index].coin.price * carteira[index].quantidade;
+    }
   }
 }

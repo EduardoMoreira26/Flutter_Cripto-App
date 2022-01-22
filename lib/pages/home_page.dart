@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           CoinsPage(),
           FavoritesPage(),
-          WalletPage(),
+          CarteiraPage(),
           ConfigPage(),
         ],
         onPageChanged: setAtualPage,
