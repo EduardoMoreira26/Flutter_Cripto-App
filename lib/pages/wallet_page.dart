@@ -20,7 +20,7 @@ class _WalletPageState extends State<WalletPage> {
   NumberFormat real;
   AccountReposiotry account;
 
-   double graficoValor = 0;
+  double graficoValor = 0;
   String graficoLabel = '';
   List<Position> wallet = [];
 
@@ -73,10 +73,10 @@ class _WalletPageState extends State<WalletPage> {
     });
   }
 
-  setGraphicData(index){
-    if(index < 0) return;
+  setGraphicData(index) {
+    if (index < 0) return;
 
-     if (index == wallet.length) {
+    if (index == wallet.length) {
       graficoLabel = 'Saldo';
       graficoValor = account.saldo;
     } else {
@@ -85,7 +85,7 @@ class _WalletPageState extends State<WalletPage> {
     }
   }
 
-  loadWallet(){
+  loadWallet() {
     setGraphicData(index);
     wallet = account.wallet;
 
@@ -98,10 +98,9 @@ class _WalletPageState extends State<WalletPage> {
       final radius = isTouched ? 60.0 : 50.0;
       final color = isTouched ? Colors.tealAccent : Colors.tealAccent[400];
 
-       double porcentagem = 0;
+      double porcentagem = 0;
       if (!isSaldo) {
-        porcentagem =
-            wallet[i].coin.price * wallet[i].quantidade / totalWallet;
+        porcentagem = wallet[i].coin.price * wallet[i].quantidade / totalWallet;
       } else {
         porcentagem = (account.saldo > 0) ? account.saldo / totalWallet : 0;
       }
@@ -118,9 +117,7 @@ class _WalletPageState extends State<WalletPage> {
           color: Colors.black87,
         ),
       );
-
     });
-
   }
 
   loadGraphic() {
@@ -139,8 +136,8 @@ class _WalletPageState extends State<WalletPage> {
                 aspectRatio: 1,
                 child: PieChart(
                   PieChartData(
-                    sectionsSpace: 5,
-                    centerSpaceRadius: 110,
+                    sectionsSpace: 50,
+                    centerSpaceRadius: 120,
                     sections: loadWallet(),
                     pieTouchData: PieTouchData(
                       touchCallback: (touch) => setState(() {
@@ -155,17 +152,22 @@ class _WalletPageState extends State<WalletPage> {
                 children: [
                   Text(
                     graficoLabel,
-                    style: TextStyle(fontSize: 20, color: Colors.teal),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.teal,
+                    ),
                   ),
                   Text(
-                    real.format(graficoValor),
-                    style: TextStyle(fontSize: 28),
+                    real.format(
+                      graficoValor,
+                    ),
+                    style: TextStyle(
+                      fontSize: 28,
+                    ),
                   ),
                 ],
               )
             ],
           );
   }
-
-
 }

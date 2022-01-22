@@ -1,7 +1,9 @@
 import 'package:cripto/models/coin.dart';
+import 'package:cripto/repositories/account__reposiotry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class DetailsCoinPage extends StatefulWidget {
@@ -21,6 +23,7 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
   final _form = GlobalKey<FormState>();
   final _value = TextEditingController();
   double qtd = 0;
+  AccountReposiotry accountReposiotry;
 
   buyCoin() {
     if (_form.currentState.validate()) {
@@ -34,6 +37,8 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
 
   @override
   Widget build(BuildContext context) {
+    accountReposiotry = Provider.of<AccountReposiotry>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text(widget.coin.name)),
@@ -108,6 +113,8 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
                     return 'Informe o valor da compra';
                   } else if (double.parse(value) < 50) {
                     return 'Compra mínima é R\$ 50,00';
+                  } else if (double.parse(value) <= accountReposiotry.saldo){
+                    return 'Você não tem saldo suficiente.';
                   }
                   return null;
                 },
