@@ -71,10 +71,15 @@ class _CarteiraPageState extends State<CarteiraPage> {
 
     for (var operacao in historico) {
       widgets.add(ListTile(
+        
         title: Text(operacao.moeda.name),
         subtitle: Text(date.format(operacao.dataOperacao)),
         trailing: Text(
-            (operacao.moeda.price * operacao.quantidade).toStringAsFixed(2)),
+          real.format(
+            (operacao.moeda.price * operacao.quantidade),
+          ),
+          style: TextStyle(color: Colors.teal, fontSize: 16),
+        ),
       ));
       widgets.add(Divider());
     }

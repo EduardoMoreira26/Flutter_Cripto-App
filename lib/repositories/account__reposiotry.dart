@@ -14,7 +14,7 @@ class AccountReposiotry extends ChangeNotifier {
 
   get saldo => _saldo;
   List<Position> get carteira => _carteira;
-  List<Historico> get historico => _historico;
+  List<Historico> get historico => _historico.reversed.toList();
 
   ContaRepository() {
     _initRepository();
