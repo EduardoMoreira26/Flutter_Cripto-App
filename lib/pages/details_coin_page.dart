@@ -25,8 +25,11 @@ class _DetailsCoinPageState extends State<DetailsCoinPage> {
   double qtd = 0;
   AccountReposiotry accountReposiotry;
 
-  buyCoin() {
+  buyCoin() async {
     if (_form.currentState.validate()) {
+      await accountReposiotry.buy(widget.coin, double.parse(_value.text));
+
+
       Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

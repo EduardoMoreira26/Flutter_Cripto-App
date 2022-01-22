@@ -41,8 +41,42 @@ class AccountReposiotry extends ChangeNotifier {
     db = await DB.instance.database;
 
     await db.transaction((txn) async {
-      final coinPosition = await txn
-          .query('carteira', where: 'sigla = ?', whereArgs: [coin.initials]);
+      final coinPosition = await txn.query(
+        'carteira',
+        where: 'sigla = ?',
+        whereArgs: [coin.initials],
+      );
+
+      if (coinPosition.isEmpty) {
+        await txn.insert('carteira', {
+          'sigla': coin.initials,
+          'moeda': coin.name,
+          'quantidade': (value / coin.price).toString(),
+        });
+      } else {
+        final atual = double.parse(coinPosition.first['quantidade'].toString());
+
+        await txn.update(
+          'carteira',
+          {'quantidade': (atual + (value / coin.price)).toString()},
+          where: 'sigla = ?',
+          whereArgs: [coin.initials],
+        );
+      }
+
+      await txn.insert('historico', {
+        'sigla': coin.initials,
+        'moeda': coin.name,
+        'quantidade': (value / coin.price).toString(),
+        'valor': value,
+        'tipo_operacao': 'compra',
+        'data_operacao': DateTime.now().millisecondsSinceEpoch
+      });
+
+      await txn.update('conta', {'saldo': saldo - value});
     });
+
+    await _initRepository();
+    notifyListeners();
   }
 }
